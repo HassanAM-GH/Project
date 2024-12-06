@@ -22,7 +22,7 @@
         </style>
     </head>
 
-    <!-- Body Section -->
+ <!-- Body Section -->
 <body class="d-flex flex-column min-vh-100">
     <!-- Navbar Section -->
     <header class="bg-primary py-3">
@@ -38,18 +38,26 @@
 
             <!-- Search Bar -->
             <div class="flex-grow-1 mx-3">
-                <form class="d-flex">
+                <form class="d-flex" onsubmit="return false;">
                     <!-- Input field for search -->
                     <input 
                         class="form-control me-2" 
                         type="search" 
+                        id="searchInput" 
                         placeholder="Search for items..." 
-                        aria-label="Search">
+                        aria-label="Search" 
+                        oninput="filterFunction()">
                     <!-- Search button -->
                     <button class="btn btn-outline-light" type="submit">
                         <i class="bi bi-search"></i>
                     </button>
                 </form>
+                <!-- Drop-down list -->
+                <div class="dropdown">
+                    <div id="dropdownList" class="dropdown-content">
+                        <!-- Dynamic list items will be added here -->
+                    </div>
+                </div>
             </div>
 
             <!-- Navigation Menu -->
@@ -68,7 +76,51 @@
             </nav>
         </div>
     </header>
-    </body>
+    <!-- JavaScript to handle the drop-down -->
+    <script>
+        const items = [
+            { name: "Art", img: "imgs/art_icon.png", link: "art.php" },
+            { name: "Interiors", img: "imgs/interiors_icon.png", link: "interiors.php" },
+            { name: "Jewelry", img: "imgs/jewelry_icon.png", link: "jewelry.php" },
+            { name: "Watches", img: "imgs/watches_icon.png", link: "watches.php" },
+            { name: "Coins & Stamps", img: "imgs/coins_icon.png", link: "coins.php" },
+            { name: "Books & History", img: "imgs/books_icon.png", link: "books.php" },
+            { name: "GoldenWatch", img: "imgs/Goldwatch.jpg", link: "GoldenWatch.php"}
+        ];
+
+        function filterFunction() {
+            const input = document.getElementById("searchInput");
+            const filter = input.value.toLowerCase();
+            const dropdown = document.getElementById("dropdownList");
+
+            dropdown.innerHTML = ''; // Clear previous results
+
+            if (filter) {
+                const filteredItems = items.filter(item => item.name.toLowerCase().includes(filter));
+                filteredItems.forEach(item => {
+                    const div = document.createElement("div");
+                    div.innerHTML = `<a href="${item.link}" class="dropdown-item"><img src="${item.img}" alt="${item.name}" class="dropdown-img"> ${item.name}</a>`;
+                    div.addEventListener("click", () => {
+                        input.value = item.name;
+                        dropdown.classList.remove("show");
+                    });
+                    dropdown.appendChild(div);
+                });
+                dropdown.classList.add("show");
+            } else {
+                dropdown.classList.remove("show");
+            }
+        }
+
+        document.addEventListener("click", (event) => {
+            if (!event.target.closest(".dropdown")) {
+                document.getElementById("dropdownList").classList.remove("show");
+            }
+        });
+    </script>
+</body>
+
+
 
 <!-- Login modal (Pop-up) -->
 <div class="modal fade" id="signInModal" tabindex="-1" aria-labelledby="signInModalLabel" aria-hidden="true">
